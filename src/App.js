@@ -1,25 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
-import { StatusContext } from "./store/Context";
+import LoadingBar from 'react-top-loading-bar';
 
 import Login from './containers/Login';
 import Dashboard from './containers/Dashboard';
 
 function App() {
+  const [loader, setLoader] = useState(0);
+
+  const onLoaderFinished = () => setLoader(0);
   return (
-    <StatusContext.Provider value={{ sidebar: false }}>
-      <Router basename='/NCUIM-SA-TOMCAT-DEV'>
+    <React.Fragment>
+      <LoadingBar
+        progress={loader}
+        height={3}
+        color='red'
+        onLoaderFinished={() => onLoaderFinished()}
+      />
+      <Router>
         <Route exact path="/">
-          <Login />
+          <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
+        </Route>
+        <Route exact path="/login">
+          <Login setLoader={setLoader} />
         </Route>
         <Route path="/dashboard">
-          <Dashboard />
+          <Dashboard setLoader={setLoader} />
         </Route>
       </Router>
-    </StatusContext.Provider>
+    </React.Fragment>
   );
 }
 

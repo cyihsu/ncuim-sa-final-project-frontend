@@ -6,15 +6,18 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useHistory } from "react-router-dom";
-
 
 export default function(props) {
   let history = useHistory();
 
   function handleClick(path) {
+    props.setLoader(10);
+    if(props.isOpen)props.handleDrawer(true);
+    props.setLoader(60);
     history.push(path);
-    props.isOpen && props.handleDrawer(true)
+    props.setLoader(100);
   }
 
   return (
@@ -58,6 +61,17 @@ export default function(props) {
           <LayersIcon />
         </ListItemIcon>
         <ListItemText primary="班表總覽" />
+      </ListItem>
+      <ListItem button
+        onClick={() => {
+          localStorage.removeItem('token');
+          handleClick("/");
+        }}
+      >
+        <ListItemIcon>
+          <ExitToAppIcon />
+        </ListItemIcon>
+        <ListItemText primary="登出" />
       </ListItem>
     </div>
   );

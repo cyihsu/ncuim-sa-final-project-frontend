@@ -1,4 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import qs from 'qs';
+import { useHistory } from 'react-router-dom';
+
 import {
   Avatar,
   CssBaseline, Typography,
@@ -37,8 +41,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function () {
+export default function (props) {
+  let history = useHistory();
   const classes = useStyles();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [submit, setSubmit] = useState(false);
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -63,6 +71,7 @@ export default function () {
               name="username"
               autoComplete="username"
               autoFocus
+              onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -74,13 +83,37 @@ export default function () {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={submit}
+              onClick={() => {
+                setSubmit(true);
+                props.setLoader(10);
+                axios.post('http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/login',
+                  qs.stringify({
+                    username: username,
+                    password: password
+                  }),
+                  {
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                  }
+                ).then(({data}) => {
+                  props.setLoader(50);
+                  localStorage.setItem("token", data.data.token);
+                  props.setLoader(70);
+                  history.push('/dashboard');
+                  props.setLoader(100);
+                }).catch(({error}) => {
+                  setSubmit(false);
+                });
+              }}
             >
               登入
             </Button>
@@ -88,11 +121,6 @@ export default function () {
               <Grid item xs>
                 <Link href="#" variant="body2">
                   忘記密碼？
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"還沒有帳號嗎？立即註冊"}
                 </Link>
               </Grid>
             </Grid>

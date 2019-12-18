@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import clsx from 'clsx';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -19,10 +21,10 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import MainListItems from '../components/listItems';
 
-import Requirement from '../pages/Requirement';
-import Staff from '../pages/Staff';
-import Timetable from '../pages/Timetable';
-import DashboardDetails from '../pages/DashboardDetails';
+const Requirement = lazy(() => import('../pages/Requirement'));
+const Staff = lazy(() => import('../pages/Staff'));
+const Timetable = lazy(() => import('../pages/Timetable'));
+const DashboardDetails = lazy(() => import('../pages/DashboardDetails'));
 
 const drawerWidth = 240;
 
@@ -31,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24,
   },
   toolbarIcon: {
     display: 'flex',
@@ -105,15 +107,31 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+async function authenticate() {
+  if(localStorage.getItem('token')) {
+    let response = await axios.get('http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/authToken',
+      {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}});
+    return response.status === 200;
+  }
+  return false;
+}
 
 export default function Dashboard(props) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const [location, setLocation] = React.useState();
-
+  const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState();
+  const [authed, setAuthed] = useState(false);
+  const history = useHistory();
   const handleDrawer = (stat) => {
     setOpen(!stat);
   };
+
+  if(!authed) {
+    authenticate().then((res) => {
+      setAuthed(res);
+      if(!res)history.push('/login');
+    });
+  }
 
   return (
     <div className={classes.root}>
@@ -148,32 +166,38 @@ export default function Dashboard(props) {
         </div>
         <Divider />
         <List>
-          <MainListItems handleDrawer={handleDrawer} isOpen={open}/>
+          <MainListItems
+            handleDrawer={handleDrawer}
+            isOpen={open}
+            setLoader={props.setLoader}
+          />
         </List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Route path="/dashboard">
-            <Switch>
-              <Route path="/dashboard" render={() => {
-                setLocation("總覽");
-                return (<DashboardDetails {...props} />);
-              }} exact />
-              <Route path="/dashboard/staff" render={() => {
-                setLocation("員工清單");
-                return (<Staff {...props} />);
-               }} exact />
-              <Route path="/dashboard/requirement" render={() => {
-                setLocation("人力需求報表");
-                return (<Requirement {...props} />);
-              }} exact />
-              <Route path="/dashboard/timetable" render={() => {
-                setLocation("班表總覽");
-                return (<Timetable {...props} />);
-              }} exact />
-            </Switch>
-          </Route>
+          <Suspense fallback={<p>Loading</p>}>
+            <Route path="/dashboard">
+              <Switch>
+                <Route path="/dashboard" render={() => {
+                  setLocation("總覽");
+                  return (<DashboardDetails {...props} />);
+                }} exact />
+                <Route path="/dashboard/staff" render={() => {
+                  setLocation("員工清單");
+                  return (<Staff {...props} />);
+                }} exact />
+                <Route path="/dashboard/requirement" render={() => {
+                  setLocation("人力需求報表");
+                  return (<Requirement {...props} />);
+                }} exact />
+                <Route path="/dashboard/timetable" render={() => {
+                  setLocation("班表總覽");
+                  return (<Timetable {...props} />);
+                }} exact />
+              </Switch>
+            </Route>
+          </Suspense>
         </Container>
       </main>
     </div>
