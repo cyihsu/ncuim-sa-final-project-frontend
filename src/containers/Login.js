@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import qs from 'qs';
+import { sha256 } from 'js-sha256';
+import { sendData } from '../utils/dataUtils';
 import { useHistory } from 'react-router-dom';
 
 import {
@@ -48,6 +48,10 @@ export default function (props) {
   const [password, setPassword] = useState();
   const [submit, setSubmit] = useState(false);
 
+  if(localStorage.getItem('token')) {
+    history.push('/dashboard');
+  }
+
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -94,15 +98,14 @@ export default function (props) {
               onClick={() => {
                 setSubmit(true);
                 props.setLoader(10);
-                axios.post('http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/login',
-                  qs.stringify({
-                    username: username,
-                    password: password
-                  }),
-                  {
-                    headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+                sendData({
+                    endpoint: '/login',
+                    method: 'post',
+                    data: {
+                      username: username,
+                      password: sha256(password)
+                    },
+                    withAuth: false
                   }
                 ).then(({data}) => {
                   props.setLoader(50);
@@ -112,6 +115,7 @@ export default function (props) {
                   props.setLoader(100);
                 }).catch(({error}) => {
                   setSubmit(false);
+                  props.setLoader(0);
                 });
               }}
             >

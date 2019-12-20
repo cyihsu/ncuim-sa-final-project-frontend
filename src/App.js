@@ -8,20 +8,28 @@ import LoadingBar from 'react-top-loading-bar';
 
 import Login from './containers/Login';
 import Dashboard from './containers/Dashboard';
+import { UserStore, userReducer } from './contexts/UserContext';
 
 function App() {
   const [loader, setLoader] = useState(0);
-
+  const [user, userDispatch] = React.useReducer(userReducer);
+  const production = true;
+  
   const onLoaderFinished = () => setLoader(0);
   return (
-    <React.Fragment>
+    <UserStore.Provider
+      value={{
+        self: [],
+        dispatch: userDispatch
+      }}
+    >
       <LoadingBar
         progress={loader}
         height={3}
         color='red'
         onLoaderFinished={() => onLoaderFinished()}
       />
-      <Router>
+      <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
         <Route exact path="/">
           <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
         </Route>
@@ -32,7 +40,7 @@ function App() {
           <Dashboard setLoader={setLoader} />
         </Route>
       </Router>
-    </React.Fragment>
+    </UserStore.Provider>
   );
 }
 

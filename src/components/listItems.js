@@ -1,4 +1,5 @@
 import React from 'react';
+import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -6,6 +7,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
+import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useHistory } from "react-router-dom";
 
@@ -31,6 +33,16 @@ export default function(props) {
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="總覽" />
+      </ListItem>
+      <ListItem button
+        onClick={()=>{
+          handleClick("/dashboard/self");
+        }}
+      >
+        <ListItemIcon>
+          <PersonIcon />
+        </ListItemIcon>
+        <ListItemText primary="個人資料" />
       </ListItem>
       <ListItem button
         onClick={()=>{
@@ -62,6 +74,7 @@ export default function(props) {
         </ListItemIcon>
         <ListItemText primary="班表總覽" />
       </ListItem>
+      <Divider />
       <ListItem button
         onClick={() => {
           localStorage.removeItem('token');

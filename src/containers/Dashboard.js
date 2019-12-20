@@ -1,8 +1,9 @@
 import React, { useState, Suspense, lazy } from 'react';
 import clsx from 'clsx';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
+import { authenticate } from '../utils/dataUtils';
 
 import {
   CssBaseline,
@@ -22,6 +23,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MainListItems from '../components/listItems';
 
 const Requirement = lazy(() => import('../pages/Requirement'));
+const Self = lazy(() => import('../pages/Self'));
 const Staff = lazy(() => import('../pages/Staff'));
 const Timetable = lazy(() => import('../pages/Timetable'));
 const DashboardDetails = lazy(() => import('../pages/DashboardDetails'));
@@ -107,15 +109,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-async function authenticate() {
-  if(localStorage.getItem('token')) {
-    let response = await axios.get('http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/authToken',
-      {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}});
-    return response.status === 200;
-  }
-  return false;
-}
-
 export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
@@ -128,7 +121,8 @@ export default function Dashboard(props) {
 
   if(!authed) {
     authenticate().then((res) => {
-      setAuthed(res);
+      console.log(res);
+      setAuthed(res.status === 200);
       if(!res)history.push('/login');
     });
   }
@@ -175,13 +169,17 @@ export default function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Suspense fallback={<p>Loading</p>}>
+        <Container maxWidth="xl" className={classes.container}>
+          <Suspense fallback={<Skeleton variant="rect" width={200} height={40} />}>
             <Route path="/dashboard">
               <Switch>
                 <Route path="/dashboard" render={() => {
                   setLocation("總覽");
                   return (<DashboardDetails {...props} />);
+                }} exact />
+                <Route path="/dashboard/self" render={() => {
+                  setLocation("個人資料");
+                  return (<Self {...props} />);
                 }} exact />
                 <Route path="/dashboard/staff" render={() => {
                   setLocation("員工清單");
