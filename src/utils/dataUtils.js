@@ -4,18 +4,14 @@ import qs from 'qs';
 const base = "http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
 
 export async function authenticate() {
-  if(localStorage.getItem('token')) {
-    await getData({
-      endpoint: '/authToken',
-      withAuth: true
-    }).then((response) => {
-      return response;
-    });
-  }
-  return false;
+  return await getData({
+    endpoint: '/authToken',
+    withAuth: true
+  });
 }
 
 export async function getData({endpoint, withAuth}) {
+  console.log('call');
   const header = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`

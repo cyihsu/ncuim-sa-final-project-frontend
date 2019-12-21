@@ -6,35 +6,38 @@ export const UserContextProvider = (props) => {
   const [state, dispatch] = React.useReducer(userReducer, initUserState);
   const history = useHistory();
   if(localStorage.getItem('token') && !state.authenticated) {
-    authenticate().then((res) => {
-      if(res === false) {
-        dispatch({
-          type: 'LOGIN',
-          payload: {
-            authenticated: true,
-            me: res.data
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        authenticate().then((res) => {
+          if(!res.data.data.dismissed) {
+            dispatch({
+              type: 'LOGIN',
+              payload: {
+                authenticated: true,
+                me: res.data.data
+              }
+            });
           }
+          else {
+            throw new Error('User has been removed.');
+          }
+        }).catch((error) => {
+          dispatch({
+            type: 'LOGOUT'
+          });
+          localStorage.clear();
+          history.push('/login');
         });
-      }
-      else {
-        throw new Error("Token not authorized.");
-      }
-      
-    }).catch((error) => {
-      dispatch({
-        type: 'LOGOUT'
-      });
-      localStorage.clear();
-      history.push('/login');
+      }, 1000)
     });
   }
 
   return (
     <UserContext.Provider
-      value={ {
-        ...state,
-        dispatch: userReducer
-      } }
+      value={{
+        state,
+        dispatch
+      }}
     >
       {props.children}
     </UserContext.Provider>
@@ -57,7 +60,7 @@ export function userReducer(state, action) {
       return {
         ...state,
         authenticated: action.payload.authenticated,
-        me: action.payload.data
+        me: action.payload.me
       };
     case "LOGOUT":
       return {

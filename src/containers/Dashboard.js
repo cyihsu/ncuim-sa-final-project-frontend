@@ -18,13 +18,12 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import MainListItems from '../components/listItems';
+import MainListItems from '../components/MenuItems';
 
 const Requirement = lazy(() => import('../pages/Requirement'));
 const Self = lazy(() => import('../pages/Self'));
 const Staff = lazy(() => import('../pages/Staff'));
 const Timetable = lazy(() => import('../pages/Timetable'));
-const DashboardDetails = lazy(() => import('../pages/DashboardDetails'));
 
 const drawerWidth = 240;
 
@@ -158,16 +157,12 @@ export default function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="xl" className={classes.container}>
+        <Container maxWidth="lg" className={classes.container}>
           <Suspense fallback={<Skeleton variant="rect" width={200} height={40} />}>
             <Route path="/dashboard">
               <Switch>
                 <Route path="/dashboard" render={() => {
                   setLocation("總覽");
-                  return (<DashboardDetails {...props} />);
-                }} exact />
-                <Route path="/dashboard/self" render={() => {
-                  setLocation("個人資料");
                   return (<Self {...props} />);
                 }} exact />
                 <Route path="/dashboard/staff" render={() => {
