@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 
 export async function authenticate() {
+  console.log('invoked');
   if(localStorage.getItem('token')) {
     let response = await getData({
       endpoint: 'http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/authToken',

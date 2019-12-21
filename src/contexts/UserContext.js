@@ -1,13 +1,22 @@
 import React from 'react';
+export const UserStore = React.createContext({
+  authenticated: false,
+  me: []
+})
 
-export const UserStore = React.createContext({})
+export const initUserState = {
+  authenticated: false,
+  me: []
+}
 
 export function userReducer(state, action) {
   switch (action.type) {
-    case "SET_USER":
-      return Object.assign({}, state, {
-        self: action.payload
-      });
+    case "LOGIN":
+      return {
+        ...state,
+        authenticated: action.payload.authenticated,
+        me: action.payload.data
+      };
     default:
       return state;
   }

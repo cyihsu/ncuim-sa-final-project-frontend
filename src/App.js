@@ -9,17 +9,18 @@ import LoadingBar from 'react-top-loading-bar';
 import Login from './containers/Login';
 import Dashboard from './containers/Dashboard';
 import { UserStore, userReducer } from './contexts/UserContext';
+import { initUserState } from './contexts/UserContext';
 
 function App() {
   const [loader, setLoader] = useState(0);
-  const [user, userDispatch] = React.useReducer(userReducer);
+  const [userState, userDispatch] = React.useReducer(userReducer, initUserState);
   const production = true;
   
   const onLoaderFinished = () => setLoader(0);
   return (
     <UserStore.Provider
       value={{
-        self: [],
+        ...userState,
         dispatch: userDispatch
       }}
     >
