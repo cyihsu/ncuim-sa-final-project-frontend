@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import { authenticate } from '../utils/dataUtils';
+import { UserStore } from '../contexts/UserContext';
 
 import {
   CssBaseline,
@@ -113,17 +114,22 @@ export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState();
-  const [authed, setAuthed] = useState(false);
+  const { authenticated, dispatch } = React.useContext(UserStore);
+  
   const history = useHistory();
-  const handleDrawer = (stat) => {
-    setOpen(!stat);
+  const handleDrawer = (state) => {
+    setOpen(!state);
   };
-
-  if(!authed) {
+  if(authenticated === false) {
     authenticate().then((res) => {
-      console.log(res);
-      setAuthed(res.status === 200);
-      if(!res)history.push('/login');
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          authenticated: true,
+          me: res.data
+        }
+      });
+      if(authenticated === false)history.push('/login');
     });
   }
 

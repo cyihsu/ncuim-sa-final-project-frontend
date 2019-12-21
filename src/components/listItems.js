@@ -10,10 +10,12 @@ import LayersIcon from '@material-ui/icons/Layers';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useHistory } from "react-router-dom";
+import { UserStore } from '../contexts/UserContext';
 
 export default function(props) {
   let history = useHistory();
-
+  const { userState, dispatch } = React.useContext(UserStore);
+  
   function handleClick(path) {
     props.setLoader(10);
     if(props.isOpen)props.handleDrawer(true);
