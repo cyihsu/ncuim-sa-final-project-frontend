@@ -1,14 +1,16 @@
 import axios from 'axios';
 import qs from 'qs';
 
+const base = "http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
+
 export async function authenticate() {
-  console.log('invoked');
   if(localStorage.getItem('token')) {
-    let response = await getData({
-      endpoint: 'http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/authToken',
+    await getData({
+      endpoint: '/authToken',
       withAuth: true
-    })
-    return response;
+    }).then((response) => {
+      return response;
+    });
   }
   return false;
 }
@@ -20,7 +22,7 @@ export async function getData({endpoint, withAuth}) {
     }
   }
   let response = await axios.get(
-    endpoint,
+    `${base}${endpoint}`,
     withAuth && header
   );
   return response;
@@ -36,7 +38,7 @@ export async function sendData({endpoint, method, data, withAuth}) {
   let response = await axios({
     url: endpoint,
     headers: header,
-    baseURL: 'http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/',
+    baseURL: base,
     method: method,
     data: qs.stringify(data)
   }).catch((error) => console.log(error));

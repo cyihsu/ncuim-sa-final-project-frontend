@@ -7,7 +7,7 @@ import { Button } from '@material-ui/core';
 
 async function fetch() {
   return await getData({
-    endpoint: 'http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1/user/all',
+    endpoint: '/user/all',
     withAuth: true
   });
 }

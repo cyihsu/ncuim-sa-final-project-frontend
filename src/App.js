@@ -8,29 +8,22 @@ import LoadingBar from 'react-top-loading-bar';
 
 import Login from './containers/Login';
 import Dashboard from './containers/Dashboard';
-import { UserStore, userReducer } from './contexts/UserContext';
-import { initUserState } from './contexts/UserContext';
+import { UserContextProvider } from './contexts/UserContext';
 
 function App() {
   const [loader, setLoader] = useState(0);
-  const [userState, userDispatch] = React.useReducer(userReducer, initUserState);
   const production = true;
   
   const onLoaderFinished = () => setLoader(0);
   return (
-    <UserStore.Provider
-      value={{
-        ...userState,
-        dispatch: userDispatch
-      }}
-    >
-      <LoadingBar
-        progress={loader}
-        height={3}
-        color='red'
-        onLoaderFinished={() => onLoaderFinished()}
-      />
-      <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
+    <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
+    <UserContextProvider>
+        <LoadingBar
+          progress={loader}
+          height={3}
+          color='red'
+          onLoaderFinished={() => onLoaderFinished()}
+        />
         <Route exact path="/">
           <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
         </Route>
@@ -40,8 +33,8 @@ function App() {
         <Route path="/dashboard">
           <Dashboard setLoader={setLoader} />
         </Route>
-      </Router>
-    </UserStore.Provider>
+      </UserContextProvider>
+    </Router>
   );
 }
 

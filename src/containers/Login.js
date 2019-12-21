@@ -48,10 +48,6 @@ export default function (props) {
   const [password, setPassword] = useState();
   const [submit, setSubmit] = useState(false);
 
-  if(localStorage.getItem('token')) {
-    history.push('/dashboard');
-  }
-
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />

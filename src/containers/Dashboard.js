@@ -1,10 +1,7 @@
 import React, { useState, Suspense, lazy } from 'react';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
-import { authenticate } from '../utils/dataUtils';
-import { UserStore } from '../contexts/UserContext';
 
 import {
   CssBaseline,
@@ -114,24 +111,10 @@ export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [location, setLocation] = useState();
-  const { authenticated, dispatch } = React.useContext(UserStore);
-  
-  const history = useHistory();
+
   const handleDrawer = (state) => {
     setOpen(!state);
   };
-  if(authenticated === false) {
-    authenticate().then((res) => {
-      dispatch({
-        type: 'LOGIN',
-        payload: {
-          authenticated: true,
-          me: res.data
-        }
-      });
-      if(authenticated === false)history.push('/login');
-    });
-  }
 
   return (
     <div className={classes.root}>

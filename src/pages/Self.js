@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { UserStore } from '../contexts/UserContext';
 
 const useStyles = makeStyles(theme => ({
   fixedHeight: {
@@ -13,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function() {
   const classes = useStyles();
-  const { me } = React.useContext(UserStore);
+
   return (
     <Grid item xs={12}>
       <h1>我的個人資訊</h1>
