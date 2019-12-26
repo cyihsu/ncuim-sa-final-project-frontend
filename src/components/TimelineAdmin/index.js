@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Tooltip, Chip } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
