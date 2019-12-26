@@ -21,6 +21,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import MainListItems from '../components/MenuItems';
 
 const Requirement = lazy(() => import('../pages/Requirement'));
+const RequirementEdit = lazy(() => import('../pages/RequirementEdit'));
 const Self = lazy(() => import('../pages/Self'));
 const Staff = lazy(() => import('../pages/Staff'));
 const Timetable = lazy(() => import('../pages/Timetable'));
@@ -170,8 +171,12 @@ export default function Dashboard(props) {
                   return (<Staff {...props} />);
                 }} exact />
                 <Route path="/dashboard/requirement" render={() => {
-                  setLocation("人力需求報表");
+                  setLocation("班表繳交");
                   return (<Requirement {...props} />);
+                }} exact />
+                <Route path="/dashboard/editrequirement" render={() => {
+                  setLocation("人力需求管理");
+                  return (<RequirementEdit {...props} />);
                 }} exact />
                 <Route path="/dashboard/timetable" render={() => {
                   setLocation("班表總覽");

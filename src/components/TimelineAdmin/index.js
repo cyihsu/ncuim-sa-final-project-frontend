@@ -19,21 +19,16 @@ const useStyles = makeStyles(theme => ({
   section2: {
     margin: theme.spacing(2),
   },
-  section3: {
-    margin: theme.spacing(3, 1, 1),
-  },
 }));
 
-export default function({day, week, data}) {
+export default function({day, week, data, toggler}) {
   const dayChineseName = ["一", "二", "三", "四", "五", "六", "日"];
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
   if(!init) {
     let initState = [];
     data.forEach(each => {
-      if(each.given) {
-        initState = {...initState, [each.time]: typeof each.given !== "undefined"};
-      }
+      initState = {...initState, [each.time]: true};
     });
     console.log(initState);
     setHourMap(prev => {return {...prev, ...initState}});
@@ -41,12 +36,6 @@ export default function({day, week, data}) {
   }
 
   const classes = useStyles();
-  const handleClick = useCallback((i) => setHourMap(prev => {
-    return ({
-      ...prev,
-      [i]: !prev[i]
-    })
-  }), []);
   return (
     <div className={classes.root}>
       <div className={classes.section1}>
@@ -71,69 +60,31 @@ export default function({day, week, data}) {
       <Divider variant="middle" />
       <div className={classes.section2}>
         <Typography gutterBottom variant="body1">
-          請選擇你能上班的時段
+          點擊以編輯時段人力需求
         </Typography>
         <div>
           {
             Array.from(Array(24).keys()).map((token) => {
               const tmp = data.find((hour) => hour.time === token);
               return (
-                <Tooltip key={token} title={`需求人力：${tmp && tmp.requirement}`} placement="top">
+                <Tooltip key={token} title={`需求人力：${tmp ? tmp.requirement : '無'}`} placement="top">
                   <Chip
                     className={classes.chip}
                     key={token}
                     label={token}
                     color={
-                      tmp ?
-                      hourMap[token] ? "secondary" : "primary"
-                      : "default"
+                      hourMap[token] ? "secondary" : "default"
                     }
-                    disabled={!tmp}
-                    onClick={() => handleClick(token)}
+                    onClick={() => toggler({
+                      time: token,
+                      data: tmp ? tmp : null
+                    })}
                   />
                 </Tooltip>
               );
             })
           }
         </div>
-      </div>
-      <div className={classes.section3}>
-        <Button
-          color="primary"
-          onClick={() => {
-            Object.keys(hourMap).forEach((hour) => {
-              const requirementID_tmp = data.find(e => e.time === parseInt(hour));
-              if(hourMap[hour] === true) {
-                if(requirementID_tmp)
-                sendData({
-                  endpoint: '/available/token/add',
-                  method: 'post',
-                  data: {
-                    uid: localStorage.getItem('uid'),
-                    rid: requirementID_tmp.id
-                  },
-                  withAuth: true
-                })
-              }
-              else {
-                if(requirementID_tmp) {
-                  console.log(requirementID_tmp);
-                  sendData({
-                    endpoint: `/available/token/remove`,
-                    method: 'delete',
-                    data: {
-                      uid: localStorage.getItem('uid'),
-                      rid: requirementID_tmp.id
-                    },
-                    withAuth: true
-                  })
-                }
-              }
-            })
-          }}
-        >
-          送出可上班時段
-        </Button>
       </div>
     </div>
   );

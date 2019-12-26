@@ -1,5 +1,7 @@
 import React from 'react';
 import { Divider, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
+
 import {
   Dashboard, People, BarChart,
   Layers, ExitToApp
@@ -71,15 +73,25 @@ export default function(props) {
             </ListItemIcon>
             <ListItemText primary="員工清單" />
           </ListItem>
+          <ListItem button
+            onClick={()=>{
+              handleClick("/dashboard/editrequirement");
+            }}
+          >
+            <ListItemIcon>
+              <EmojiPeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary="人力需求管理" />
+          </ListItem>
         </React.Fragment>
       }
       <Divider />
       <ListItem button
         onClick={() => {
+          localStorage.removeItem('token');
           dispatch({
             type: 'LOGOUT'
           });
-          localStorage.removeItem('token');
           handleClick("/");
         }}
       >

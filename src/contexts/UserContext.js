@@ -31,7 +31,7 @@ export const UserContextProvider = (props) => {
       }, 1000)
     });
   }
-
+  
   return (
     <UserContext.Provider
       value={{

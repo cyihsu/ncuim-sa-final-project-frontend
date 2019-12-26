@@ -1,7 +1,9 @@
 import React from 'react';
+import useSWR from 'swr';
 import { Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Timeline from '../components/Timeline';
+import { getData } from '../utils/dataUtils';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -14,7 +16,24 @@ const useStyles = makeStyles(theme => ({
 
 export default function() {
   const classes = useStyles();
-
+  const week = 51;
+  const requirementData = useSWR(`/schedule/week/${week}`, url => getData({endpoint: url, withAuth: true}))
+  
+  if(!requirementData.data) {
+    return <p>loading...</p>
+  }
+  
+  const mapped = requirementData.data.data.data.map(date => {
+    return {
+      id: date.timeTokenID,
+      day: new Date(date.tokenDate).getDay(),
+      time: date.tokenTime,
+      requirement: date.workforceRequirements,
+      given: date.availableWorkforce.find(
+        each => each.user.uid === parseInt(localStorage.getItem('uid')))
+    }
+  });
+  
   return (
     <Grid>
       <h1>12/21 - 12/27 人力需求資訊</h1>
@@ -25,41 +44,18 @@ export default function() {
         alignItems="center"
         spacing={3}
       >
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="日" date="12/21"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="一" date="12/22"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="二" date="12/23"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="三" date="12/24"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="四" date="12/25"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="五" date="12/26"/>
-          </Paper>
-        </Grid>
-        <Grid item>
-          <Paper className={classes.paper}>
-            <Timeline day="六" date="12/27"/>
-          </Paper>
-        </Grid>
+      {
+        Array.from(Array(7).keys()).map((day) => {
+          const requirement = mapped.filter((e) => e.day === day);
+          return (
+            <Grid item key={day}>
+              <Paper className={classes.paper}>
+                <Timeline day={day} week={week} data={requirement}/>
+              </Paper>
+            </Grid>
+          )
+        })
+      }
       </Grid>
     </Grid>
   );

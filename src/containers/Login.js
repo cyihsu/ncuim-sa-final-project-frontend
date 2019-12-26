@@ -106,6 +106,7 @@ export default function (props) {
                 ).then(({data}) => {
                   props.setLoader(50);
                   localStorage.setItem("token", data.data.token);
+                  localStorage.setItem("uid", data.data.uid);
                   props.setLoader(70);
                   history.push('/dashboard');
                   props.setLoader(100);

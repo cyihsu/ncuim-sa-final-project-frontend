@@ -17,7 +17,7 @@ function App() {
   const onLoaderFinished = () => setLoader(0);
   return (
     <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
-    <UserContextProvider>
+      <UserContextProvider>
         <LoadingBar
           progress={loader}
           height={3}

@@ -53,7 +53,7 @@ export default function() {
       <Grid item xs={12}>
         <h1>我的個人資訊</h1>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={7}>
             <Card className={classes.fixedHeight}>
               <Typography component="h2" variant="h6" color="primary" gutterBottom>
               職等資訊
@@ -90,7 +90,7 @@ export default function() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12} md={5}>
             <Card className={classes.fixedHeight}>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>
