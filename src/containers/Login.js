@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { sha256 } from 'js-sha256';
 import { sendData } from '../utils/dataUtils';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../contexts/UserContext';
+import { authenticate } from '../utils/dataUtils';
 
 import {
   Avatar,
@@ -47,7 +49,8 @@ export default function (props) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [submit, setSubmit] = useState(false);
-
+  const {dispatch} = React.useContext(UserContext);
+  
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -104,10 +107,21 @@ export default function (props) {
                     withAuth: false
                   }
                 ).then(({data}) => {
-                  props.setLoader(50);
                   localStorage.setItem("token", data.data.token);
                   localStorage.setItem("uid", data.data.uid);
-                  props.setLoader(70);
+                  props.setLoader(30);
+                  authenticate().then((res) => {
+                    if(!res.data.data.dismissed) {
+                      dispatch({
+                        type: 'LOGIN',
+                        payload: {
+                          authenticated: true,
+                          me: res.data.data
+                        }
+                      });
+                    }
+                  });
+                  props.setLoader(60);
                   history.push('/dashboard');
                   props.setLoader(100);
                 }).catch(({error}) => {

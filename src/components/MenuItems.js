@@ -11,7 +11,7 @@ import { UserContext } from '../contexts/UserContext';
 
 export default function(props) {
   let history = useHistory();
-  const { state, dispatch } = React.useContext(UserContext);
+  const {state, dispatch} = React.useContext(UserContext);
   const [isAdmin, setAdmin] = React.useState(false);
   React.useEffect(() => {
     if(state.me.rank && state.me.rank.admin) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-const base = "http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
+const base = "http://alpha.lc.ncu.edu.tw:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
 
 export async function authenticate() {
   return await getData({

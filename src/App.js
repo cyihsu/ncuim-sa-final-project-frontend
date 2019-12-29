@@ -9,6 +9,7 @@ import LoadingBar from 'react-top-loading-bar';
 import Login from './containers/Login';
 import Dashboard from './containers/Dashboard';
 import { UserContextProvider } from './contexts/UserContext';
+import { UIContextProvider } from './contexts/UIContext';
 
 function App() {
   const [loader, setLoader] = useState(0);
@@ -18,21 +19,23 @@ function App() {
   return (
     <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
       <UserContextProvider>
-        <LoadingBar
-          progress={loader}
-          height={3}
-          color='red'
-          onLoaderFinished={() => onLoaderFinished()}
-        />
-        <Route exact path="/">
-          <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
-        </Route>
-        <Route exact path="/login">
-          <Login setLoader={setLoader} />
-        </Route>
-        <Route path="/dashboard">
-          <Dashboard setLoader={setLoader} />
-        </Route>
+        <UIContextProvider>
+          <LoadingBar
+            progress={loader}
+            height={3}
+            color='red'
+            onLoaderFinished={() => onLoaderFinished()}
+          />
+          <Route exact path="/">
+            <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
+          </Route>
+          <Route exact path="/login">
+            <Login setLoader={setLoader} />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard setLoader={setLoader} />
+          </Route>
+        </UIContextProvider>
       </UserContextProvider>
     </Router>
   );

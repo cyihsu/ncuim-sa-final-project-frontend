@@ -1,36 +1,40 @@
 import React from 'react';
 import { authenticate } from '../utils/dataUtils';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 export const UserContextProvider = (props) => {
   const [state, dispatch] = React.useReducer(userReducer, initUserState);
   const history = useHistory();
-  if(localStorage.getItem('token') && !state.authenticated) {
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        authenticate().then((res) => {
-          if(!res.data.data.dismissed) {
-            dispatch({
-              type: 'LOGIN',
-              payload: {
-                authenticated: true,
-                me: res.data.data
-              }
-            });
-          }
-          else {
-            throw new Error('User has been removed.');
-          }
-        }).catch((error) => {
+  const match = useRouteMatch({
+    path: '/login',
+    strict: true,
+    sensitive: true
+  })
+
+  React.useEffect(() => {
+    if(localStorage.getItem("token") && !state.authenticated) {
+      authenticate().then((res) => {
+        if(!res.data.data.dismissed) {
           dispatch({
-            type: 'LOGOUT'
+            type: 'LOGIN',
+            payload: {
+              authenticated: true,
+              me: res.data.data
+            }
           });
-          localStorage.clear();
-          history.push('/login');
+          if(match) {
+            history.push('/dashboard');
+          }
+        }
+      }).catch(() => {
+        dispatch({
+          type: 'LOGOUT'
         });
-      }, 1000)
-    });
-  }
+        localStorage.clear();
+        history.push('/login');
+      })
+    }
+  }, [history, match, state.authenticated])
   
   return (
     <UserContext.Provider

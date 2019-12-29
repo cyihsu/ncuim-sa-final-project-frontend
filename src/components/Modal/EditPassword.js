@@ -6,15 +6,15 @@ import {
 } from '@material-ui/core';
 import { sha256 } from 'js-sha256';
 
-import { sendData } from '../utils/dataUtils';
+import { sendData } from '../../utils/dataUtils';
 
-export default function({ user, open, toggler }) {
+export default function({ data, open, toggler }) {
   const [password, setPassword] = useState();
   const [passwordCheck, setCheck] = useState();
 
   return (
     <Dialog open={open} onClose={toggler} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">修改 {user.name} 的登入密碼</DialogTitle>
+      <DialogTitle id="form-dialog-title">修改 {data.name} 的登入密碼</DialogTitle>
       <DialogContent>
         <DialogContentText>
           請注意，以下操作將直接覆蓋使用者既有密碼，請謹慎操作。
@@ -53,7 +53,7 @@ export default function({ user, open, toggler }) {
         <Button
           onClick={() => {
             sendData({
-              endpoint: `/user/credentials/${user.id}`,
+              endpoint: `/data/credentials/${data.id}`,
               method: 'patch',
               data: {
                 password: sha256(password)

@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export default function({ user, open, toggler }) {
+export default function({ data, open, toggler }) {
   return (
     <Dialog open={open} onClose={toggler} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">修改個人資訊</DialogTitle>

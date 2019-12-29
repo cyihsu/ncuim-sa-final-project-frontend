@@ -6,8 +6,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { UserContext } from '../contexts/UserContext';
 
-const EditModal = lazy(() => import('../components/EditModal'));
-const PasswordModal = lazy(() => import('../components/PasswordModal'));
+import { EditInfo, EditPassword, Test } from '../components/Modal';
+import { UIContext } from '../contexts/UIContext';
 
 const useStyles = makeStyles(theme => ({
   fixedHeight: {
@@ -45,11 +45,13 @@ export default function() {
   };
   
   const user = {name: state.me.name, id: state.me.id}
+  const {state: UIState, dispatch} = React.useContext(UIContext);
 
   return (
     <React.Fragment>
-      <EditModal open={toggleEditor} toggler={handleEditor} user={user} />
-      <PasswordModal open={togglePWDEditor} toggler={handleModal} user={user} />
+      <EditInfo open={toggleEditor} toggler={handleEditor} data={user} />
+      <EditPassword open={togglePWDEditor} toggler={handleModal} data={user} />
+      <Test />
       <Grid item xs={12}>
         <h1>我的個人資訊</h1>
         <Grid container spacing={3}>

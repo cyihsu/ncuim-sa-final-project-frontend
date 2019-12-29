@@ -2,8 +2,8 @@ import React from 'react';
 import useSWR from 'swr';
 import { Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import TimelineAdmin from '../components/TimelineAdmin';
-import EditTokenModal from '../components/EditTokenModal';
+import { AdminTimeline } from '../components/Timeline';
+import { EditRequirement } from '../components/Modal';
 
 import { getData } from '../utils/dataUtils';
 
@@ -46,7 +46,7 @@ export default function() {
   
   return (
     <React.Fragment>
-      <EditTokenModal open={toggleModal} toggler={handleModal} data={modalData}/>
+      <EditRequirement open={toggleModal} toggler={handleModal} data={modalData}/>
       <Grid>
         <h1>編輯人力需求資訊（第 51 週）</h1>
         <Grid
@@ -62,7 +62,7 @@ export default function() {
             return (
               <Grid item key={day}>
                 <Paper className={classes.paper}>
-                  <TimelineAdmin
+                  <AdminTimeline
                     day={day}
                     week={week}
                     data={requirement}

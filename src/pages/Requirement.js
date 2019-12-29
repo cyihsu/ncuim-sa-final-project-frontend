@@ -2,7 +2,7 @@ import React from 'react';
 import useSWR from 'swr';
 import { Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Timeline from '../components/Timeline';
+import { UserTimeline } from '../components/Timeline';
 import { getData } from '../utils/dataUtils';
 
 const useStyles = makeStyles(theme => ({
@@ -50,7 +50,7 @@ export default function() {
           return (
             <Grid item key={day}>
               <Paper className={classes.paper}>
-                <Timeline day={day} week={week} data={requirement}/>
+                <UserTimeline day={day} week={week} data={requirement}/>
               </Paper>
             </Grid>
           )
