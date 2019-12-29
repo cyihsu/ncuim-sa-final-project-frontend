@@ -158,7 +158,7 @@ export default function Dashboard(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
+        <Container maxWidth="xl" className={classes.container}>
           <Suspense fallback={<Skeleton variant="rect" width={200} height={40} />}>
             <Route path="/dashboard">
               <Switch>

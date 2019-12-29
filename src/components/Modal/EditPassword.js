@@ -5,6 +5,7 @@ import {
   DialogContentText, DialogTitle
 } from '@material-ui/core';
 import { sha256 } from 'js-sha256';
+import { toast } from 'react-toastify';
 
 import { sendData } from '../../utils/dataUtils';
 
@@ -53,12 +54,16 @@ export default function({ data, open, toggler }) {
         <Button
           onClick={() => {
             sendData({
-              endpoint: `/data/credentials/${data.id}`,
+              endpoint: `/user/credentials/${data.id}`,
               method: 'patch',
               data: {
                 password: sha256(password)
               },
               withAuth: true
+            }).then(() => {
+              toast.success("修改密碼成功！");
+            }).catch(() => {
+              toast.error("修改密碼失敗")
             });
             toggler();
           }}

@@ -4,6 +4,7 @@ import { sendData } from '../utils/dataUtils';
 import { useHistory } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import { authenticate } from '../utils/dataUtils';
+import { toast } from 'react-toastify';
 
 import {
   Avatar,
@@ -119,13 +120,15 @@ export default function (props) {
                           me: res.data.data
                         }
                       });
+                      toast.success('登入成功');
                     }
                   });
                   props.setLoader(60);
                   history.push('/dashboard');
                   props.setLoader(100);
-                }).catch(({error}) => {
+                }).catch((error) => {
                   setSubmit(false);
+                  toast.error('目前無法登入');
                   props.setLoader(0);
                 });
               }}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-const base = "http://alpha.lc.ncu.edu.tw:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
+const base = "http://localhost:8080/NCUIM-SA-TOMCAT-DEV/api/v1";
 
 export async function authenticate() {
   return await getData({
@@ -11,7 +11,6 @@ export async function authenticate() {
 }
 
 export async function getData({endpoint, withAuth}) {
-  console.log('call');
   const header = {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -37,6 +36,6 @@ export async function sendData({endpoint, method, data, withAuth}) {
     baseURL: base,
     method: method,
     data: qs.stringify(data)
-  }).catch((error) => console.log(error));
+  });
   return response;
 }

@@ -6,26 +6,13 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-
+import { toast } from 'react-toastify';
+import { trigger } from 'swr'
 import { sendData } from '../../utils/dataUtils';
 
-const useStyles = makeStyles(theme => ({
-  chip: {
-    marginRight: theme.spacing(1),
-  },
-  section1: {
-    margin: theme.spacing(3, 2),
-  },
-  section2: {
-    margin: theme.spacing(2),
-  },
-  section3: {
-    margin: theme.spacing(3, 1, 1),
-  },
-}));
+import { useStyles, dayChineseName } from './TimelineConst';
 
 export default function({day, week, data}) {
-  const dayChineseName = ["一", "二", "三", "四", "五", "六", "日"];
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
   if(!init) {
@@ -35,18 +22,18 @@ export default function({day, week, data}) {
         initState = {...initState, [each.time]: typeof each.given !== "undefined"};
       }
     });
-    console.log(initState);
     setHourMap(prev => {return {...prev, ...initState}});
     setInit(true);
   }
 
-  const classes = useStyles();
   const handleClick = useCallback((i) => setHourMap(prev => {
     return ({
       ...prev,
       [i]: !prev[i]
     })
   }), []);
+
+  const classes = useStyles();
   return (
     <div className={classes.root}>
       <div className={classes.section1}>
@@ -101,23 +88,26 @@ export default function({day, week, data}) {
         <Button
           color="primary"
           onClick={() => {
+            let fail = 0;
             Object.keys(hourMap).forEach((hour) => {
               const requirementID_tmp = data.find(e => e.time === parseInt(hour));
               if(hourMap[hour] === true) {
-                if(requirementID_tmp)
-                sendData({
-                  endpoint: '/available/token/add',
-                  method: 'post',
-                  data: {
-                    uid: localStorage.getItem('uid'),
-                    rid: requirementID_tmp.id
-                  },
-                  withAuth: true
-                })
+                if(requirementID_tmp) {
+                  sendData({
+                    endpoint: '/available/token/add',
+                    method: 'post',
+                    data: {
+                      uid: localStorage.getItem('uid'),
+                      rid: requirementID_tmp.id
+                    },
+                    withAuth: true
+                  }).catch(() => {
+                    ++fail;
+                  })
+                }
               }
               else {
                 if(requirementID_tmp) {
-                  console.log(requirementID_tmp);
                   sendData({
                     endpoint: `/available/token/remove`,
                     method: 'delete',
@@ -126,10 +116,23 @@ export default function({day, week, data}) {
                       rid: requirementID_tmp.id
                     },
                     withAuth: true
+                  }).catch(() => {
+                    ++fail;
                   })
                 }
               }
-            })
+            });
+            if(fail > 0)toast.error('送出部分時段失敗，請重新整理！');
+            else toast.success('送出時段成功');
+            trigger(`/schedule/week/${week}`);
+            let initState = [];
+            data.forEach(each => {
+              if(each.given) {
+                initState = {...initState, [each.time]: typeof each.given !== "undefined"};
+              }
+            });
+            setHourMap(prev => {return {...prev, ...initState}});
+            toast.success('重新載入成功');
           }}
         >
           送出可上班時段

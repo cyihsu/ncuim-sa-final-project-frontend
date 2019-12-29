@@ -10,7 +10,6 @@ import Slider from '@material-ui/core/Slider';
 import InputLabel from '@material-ui/core/InputLabel';
 
 export default function FormDialog({ data, open, toggler }) {
-  console.log(data);
   return (
     <Dialog
       open={open}

@@ -1,27 +1,14 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { Tooltip, Chip } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 
-import { sendData } from '../../utils/dataUtils';
-
-const useStyles = makeStyles(theme => ({
-  chip: {
-    marginRight: theme.spacing(1),
-  },
-  section1: {
-    margin: theme.spacing(3, 2),
-  },
-  section2: {
-    margin: theme.spacing(2),
-  },
-}));
+import { useStyles, dayChineseName } from './TimelineConst';
 
 export default function({day, week, data, toggler}) {
-  const dayChineseName = ["一", "二", "三", "四", "五", "六", "日"];
+  
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
   if(!init) {
@@ -29,7 +16,7 @@ export default function({day, week, data, toggler}) {
     data.forEach(each => {
       initState = {...initState, [each.time]: true};
     });
-    console.log(initState);
+
     setHourMap(prev => {return {...prev, ...initState}});
     setInit(true);
   }

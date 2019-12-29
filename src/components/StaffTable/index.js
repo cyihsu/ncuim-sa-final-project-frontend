@@ -3,7 +3,7 @@ import MaterialTable from "material-table";
 import { getData, sendData } from '../../utils/dataUtils';
 import { options, title } from './settings';
 import { localization } from './localization';
-import { Button } from '@material-ui/core';
+import { Select, Button } from '@material-ui/core';
 
 async function fetch() {
   return await getData({
@@ -20,7 +20,21 @@ export default function({ toggler, setter }) {
         { title: "真實姓名", field: "name" },
         { title: "電子郵件", field: "email" },
         { title: "電話號碼", field: "phone" },
-        { title: "員工職等", field: "rank.rankName" },
+        { title: "員工職等",
+          field: "rank.rankName",
+          editComponent: props => {
+            return (
+              <Select
+                native
+                value={props.value}
+                onChange={e => props.onChange(e.target.value)}
+              >
+                <option value={'管理員'}>管理員</option>
+                <option value={'計時人員'}>計時人員</option>
+              </Select>
+            );
+            }
+        },
         {
           title: "員工在職狀態",
           field: "dismissed",
@@ -108,7 +122,7 @@ export default function({ toggler, setter }) {
                   name: newData.name,
                   email: newData.email,
                   phone: newData.phone,
-                  rank: newData.rank.rankID,
+                  rank: newData.rank.rankName === '管理員' ? 1 : 2,
                 },
                 withAuth: true
               }).then(

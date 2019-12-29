@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import {
   Grid, Typography, Button,
   Card, CardActions, CardContent
@@ -7,7 +7,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { UserContext } from '../contexts/UserContext';
 
 import { EditInfo, EditPassword, Test } from '../components/Modal';
-import { UIContext } from '../contexts/UIContext';
 
 const useStyles = makeStyles(theme => ({
   fixedHeight: {
@@ -45,7 +44,6 @@ export default function() {
   };
   
   const user = {name: state.me.name, id: state.me.id}
-  const {state: UIState, dispatch} = React.useContext(UIContext);
 
   return (
     <React.Fragment>
