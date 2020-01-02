@@ -7,11 +7,11 @@ export const localization = {
     editRow: {
       deleteText: '你確定要修改此員工的在職狀態嗎？',
       cancelTooltip: '取消',
-      saveTooltip: '儲存變更'
-    }
+      saveTooltip: '儲存變更',
+    },
   },
   header: {
-    actions: '項目操作'
+    actions: '項目操作',
   },
   pagination: {
     labelRowsSelect: '',
@@ -19,6 +19,6 @@ export const localization = {
     firstTooltip: '第一頁',
     previousTooltip: '上一頁',
     nextTooltip: '下一頁',
-    lastTooltip: '最後一頁'
-  }
-}
+    lastTooltip: '最後一頁',
+  },
+};

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Redirect
+  Redirect,
 } from 'react-router-dom';
 import LoadingBar from 'react-top-loading-bar';
 import { toast } from 'react-toastify';
@@ -21,20 +21,20 @@ toast.configure({
 function App() {
   const [loader, setLoader] = useState(0);
   const production = true;
-  
+
   const onLoaderFinished = () => setLoader(0);
   return (
-    <Router basename={production ? "/NCUIM-SA-TOMCAT-DEV" : ""}>
+    <Router basename={production ? '/NCUIM-SA-TOMCAT-DEV' : ''}>
       <UserContextProvider>
         <UIContextProvider>
           <LoadingBar
             progress={loader}
             height={3}
-            color='red'
+            color="red"
             onLoaderFinished={() => onLoaderFinished()}
           />
           <Route exact path="/">
-            <Redirect to={localStorage.getItem('token') ? "/dashboard" : "/login" } />
+            <Redirect to={localStorage.getItem('token') ? '/dashboard' : '/login'} />
           </Route>
           <Route exact path="/login">
             <Login setLoader={setLoader} />

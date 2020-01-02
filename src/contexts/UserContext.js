@@ -1,6 +1,6 @@
 import React from 'react';
-import { authenticate } from '../utils/dataUtils';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import { authenticate } from '../utils/dataUtils';
 
 export const UserContextProvider = (props) => {
   const [state, dispatch] = React.useReducer(userReducer, initUserState);
@@ -8,68 +8,68 @@ export const UserContextProvider = (props) => {
   const match = useRouteMatch({
     path: '/login',
     strict: true,
-    sensitive: true
-  })
+    sensitive: true,
+  });
 
   React.useEffect(() => {
-    if(localStorage.getItem("token") && !state.authenticated) {
+    if (localStorage.getItem('token') && !state.authenticated) {
       authenticate().then((res) => {
-        if(!res.data.data.dismissed) {
+        if (!res.data.data.dismissed) {
           dispatch({
             type: 'LOGIN',
             payload: {
               authenticated: true,
-              me: res.data.data
-            }
+              me: res.data.data,
+            },
           });
-          if(match) {
+          if (match) {
             history.push('/dashboard');
           }
         }
       }).catch(() => {
         dispatch({
-          type: 'LOGOUT'
+          type: 'LOGOUT',
         });
         localStorage.clear();
         history.push('/login');
-      })
+      });
     }
-  }, [history, match, state.authenticated])
-  
+  }, [history, match, state.authenticated]);
+
   return (
     <UserContext.Provider
       value={{
         state,
-        dispatch
+        dispatch,
       }}
     >
       {props.children}
     </UserContext.Provider>
   );
-}
+};
 
 export const UserContext = React.createContext({
   authenticated: false,
-  me: []
-})
+  me: [],
+});
 
 export const initUserState = {
   authenticated: false,
-  me: []
-}
+  me: [],
+};
 
 export function userReducer(state, action) {
   switch (action.type) {
-    case "LOGIN":
+    case 'LOGIN':
       return {
         ...state,
         authenticated: action.payload.authenticated,
-        me: action.payload.me
+        me: action.payload.me,
       };
-    case "LOGOUT":
+    case 'LOGOUT':
       return {
         authenticated: false,
-        me: []
+        me: [],
       };
     default:
       return state;

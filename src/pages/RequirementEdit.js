@@ -7,7 +7,7 @@ import { EditRequirement } from '../components/Modal';
 
 import { getData } from '../utils/dataUtils';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     display: 'flex',
@@ -16,37 +16,35 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function() {
+export default function () {
   const classes = useStyles();
   const [toggleModal, setModal] = React.useState(false);
   const [modalData, setModalData] = React.useState({});
   const week = 51;
-  const requirementData = useSWR(`/schedule/week/${week}`, url => getData({endpoint: url, withAuth: true}))
-  
-  if(!requirementData.data) {
-    return <p>loading...</p>
+  const requirementData = useSWR(`/schedule/week/${week}`, (url) => getData({ endpoint: url, withAuth: true }));
+
+  if (!requirementData.data) {
+    return <p>loading...</p>;
   }
-  
-  function handleModal({data}) {
-    if(data) {
+
+  function handleModal({ data }) {
+    if (data) {
       setModalData(data);
     }
     setModal(!toggleModal);
   }
 
-  const mapped = requirementData.data.data.data.map(date => {
-    return {
-      id: date.timeTokenID,
-      day: new Date(date.tokenDate).getDay(),
-      time: date.tokenTime,
-      requirement: date.workforceRequirements,
-      given: date.availableWorkforce
-    }
-  });
-  
+  const mapped = requirementData.data.data.data.map((date) => ({
+    id: date.timeTokenID,
+    day: new Date(date.tokenDate).getDay(),
+    time: date.tokenTime,
+    requirement: date.workforceRequirements,
+    given: date.availableWorkforce,
+  }));
+
   return (
-    <React.Fragment>
-      <EditRequirement open={toggleModal} toggler={handleModal} data={modalData}/>
+    <>
+      <EditRequirement open={toggleModal} toggler={handleModal} data={modalData} />
       <Grid>
         <h1>編輯人力需求資訊（第 51 週）</h1>
         <Grid
@@ -56,7 +54,7 @@ export default function() {
           alignItems="center"
           spacing={3}
         >
-        {
+          {
           Array.from(Array(7).keys()).map((day) => {
             const requirement = mapped.filter((e) => e.day === day);
             return (
@@ -70,11 +68,11 @@ export default function() {
                   />
                 </Paper>
               </Grid>
-            )
+            );
           })
         }
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }

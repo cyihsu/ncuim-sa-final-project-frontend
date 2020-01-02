@@ -3,5 +3,5 @@ import UserTimeline from './User';
 
 export {
   AdminTimeline,
-  UserTimeline
-}
+  UserTimeline,
+};

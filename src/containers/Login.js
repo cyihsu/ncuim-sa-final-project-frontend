@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { sha256 } from 'js-sha256';
-import { sendData } from '../utils/dataUtils';
 import { useHistory } from 'react-router-dom';
-import { UserContext } from '../contexts/UserContext';
-import { authenticate } from '../utils/dataUtils';
 import { toast } from 'react-toastify';
 
 import {
@@ -14,8 +11,11 @@ import {
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import { authenticate, sendData } from '../utils/dataUtils';
+import { UserContext } from '../contexts/UserContext';
 
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
   },
@@ -45,13 +45,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function (props) {
-  let history = useHistory();
+  const history = useHistory();
   const classes = useStyles();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [submit, setSubmit] = useState(false);
-  const {dispatch} = React.useContext(UserContext);
-  
+  const { dispatch } = React.useContext(UserContext);
+
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -99,26 +99,25 @@ export default function (props) {
                 setSubmit(true);
                 props.setLoader(10);
                 sendData({
-                    endpoint: '/login',
-                    method: 'post',
-                    data: {
-                      username: username,
-                      password: sha256(password)
-                    },
-                    withAuth: false
-                  }
-                ).then(({data}) => {
-                  localStorage.setItem("token", data.data.token);
-                  localStorage.setItem("uid", data.data.uid);
+                  endpoint: '/login',
+                  method: 'post',
+                  data: {
+                    username,
+                    password: sha256(password),
+                  },
+                  withAuth: false,
+                }).then(({ data }) => {
+                  localStorage.setItem('token', data.data.token);
+                  localStorage.setItem('uid', data.data.uid);
                   props.setLoader(30);
                   authenticate().then((res) => {
-                    if(!res.data.data.dismissed) {
+                    if (!res.data.data.dismissed) {
                       dispatch({
                         type: 'LOGIN',
                         payload: {
                           authenticated: true,
-                          me: res.data.data
-                        }
+                          me: res.data.data,
+                        },
                       });
                       toast.success('登入成功');
                     }

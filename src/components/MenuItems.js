@@ -1,27 +1,29 @@
 import React from 'react';
-import { Divider, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+  Divider, ListItem, ListItemIcon, ListItemText,
+} from '@material-ui/core';
 import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 
 import {
   Dashboard, People, BarChart,
-  Layers, ExitToApp
+  Layers, ExitToApp,
 } from '@material-ui/icons';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 
-export default function(props) {
-  let history = useHistory();
-  const {state, dispatch} = React.useContext(UserContext);
+export default function (props) {
+  const history = useHistory();
+  const { state, dispatch } = React.useContext(UserContext);
   const [isAdmin, setAdmin] = React.useState(false);
   React.useEffect(() => {
-    if(state.me.rank && state.me.rank.admin) {
+    if (state.me.rank && state.me.rank.admin) {
       setAdmin(state.me.rank.admin);
     }
-  }, [state.me])
-  
+  }, [state.me]);
+
   function handleClick(path) {
     props.setLoader(10);
-    if(props.isOpen)props.handleDrawer(true);
+    if (props.isOpen)props.handleDrawer(true);
     props.setLoader(60);
     history.push(path);
     props.setLoader(100);
@@ -29,9 +31,10 @@ export default function(props) {
 
   return (
     <div>
-      <ListItem button
-        onClick={()=>{
-          handleClick("/dashboard");
+      <ListItem
+        button
+        onClick={() => {
+          handleClick('/dashboard');
         }}
       >
         <ListItemIcon>
@@ -39,9 +42,10 @@ export default function(props) {
         </ListItemIcon>
         <ListItemText primary="總覽" />
       </ListItem>
-      <ListItem button
-        onClick={()=>{
-          handleClick("/dashboard/requirement");
+      <ListItem
+        button
+        onClick={() => {
+          handleClick('/dashboard/requirement');
         }}
       >
         <ListItemIcon>
@@ -49,9 +53,10 @@ export default function(props) {
         </ListItemIcon>
         <ListItemText primary="人力需求報表" />
       </ListItem>
-      <ListItem button
-        onClick={()=>{
-          handleClick("/dashboard/timetable");
+      <ListItem
+        button
+        onClick={() => {
+          handleClick('/dashboard/timetable');
         }}
       >
         <ListItemIcon>
@@ -60,12 +65,14 @@ export default function(props) {
         <ListItemText primary="班表總覽" />
       </ListItem>
       {
-        isAdmin &&
-        <React.Fragment>
+        isAdmin
+        && (
+        <>
           <Divider />
-          <ListItem button
-            onClick={()=>{
-              handleClick("/dashboard/staff");
+          <ListItem
+            button
+            onClick={() => {
+              handleClick('/dashboard/staff');
             }}
           >
             <ListItemIcon>
@@ -73,9 +80,10 @@ export default function(props) {
             </ListItemIcon>
             <ListItemText primary="員工清單" />
           </ListItem>
-          <ListItem button
-            onClick={()=>{
-              handleClick("/dashboard/editrequirement");
+          <ListItem
+            button
+            onClick={() => {
+              handleClick('/dashboard/editrequirement');
             }}
           >
             <ListItemIcon>
@@ -83,16 +91,18 @@ export default function(props) {
             </ListItemIcon>
             <ListItemText primary="人力需求管理" />
           </ListItem>
-        </React.Fragment>
+        </>
+        )
       }
       <Divider />
-      <ListItem button
+      <ListItem
+        button
         onClick={() => {
           localStorage.removeItem('token');
           dispatch({
-            type: 'LOGOUT'
+            type: 'LOGOUT',
           });
-          handleClick("/");
+          handleClick('/');
         }}
       >
         <ListItemIcon>

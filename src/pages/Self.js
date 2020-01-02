@@ -1,14 +1,14 @@
 import React from 'react';
 import {
   Grid, Typography, Button,
-  Card, CardActions, CardContent
+  Card, CardActions, CardContent,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { UserContext } from '../contexts/UserContext';
 
 import { EditInfo, EditPassword, Test } from '../components/Modal';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
     padding: theme.spacing(2),
@@ -16,20 +16,20 @@ const useStyles = makeStyles(theme => ({
   },
   NameAttr: {
     fontSize: 28,
-    fontWeight: 700
+    fontWeight: 700,
   },
   RankAttr: {
     fontSize: 48,
     fontWeight: 700,
-    flex: 1
+    flex: 1,
   },
   depositContext: {
     flex: 1,
   },
-  
+
 }));
 
-export default function() {
+export default function () {
   const classes = useStyles();
   const { state } = React.useContext(UserContext);
   const [toggleEditor, setEditor] = React.useState(false);
@@ -42,11 +42,11 @@ export default function() {
   const handleModal = () => {
     setPWD(!togglePWDEditor);
   };
-  
-  const user = {name: state.me.name, id: state.me.id}
+
+  const user = { name: state.me.name, id: state.me.id };
 
   return (
-    <React.Fragment>
+    <>
       <EditInfo open={toggleEditor} toggler={handleEditor} data={user} />
       <EditPassword open={togglePWDEditor} toggler={handleModal} data={user} />
       <Test />
@@ -66,9 +66,9 @@ export default function() {
                     </Typography>
                     <Typography color="textSecondary" align="right" className={classes.depositContext}>
                       {
-                        state.me.rank &&
-                        state.me.rank.admin ? "非計時人員"
-                        : (state.me.rank && '$' + state.me.rank.hourlyPay)
+                        state.me.rank
+                        && state.me.rank.admin ? '非計時人員'
+                          : (state.me.rank && `$${state.me.rank.hourlyPay}`)
                       }
                     </Typography>
                   </Grid>
@@ -103,10 +103,12 @@ export default function() {
                   {state.me.username}
                 </Typography>
                 <Typography variant="body2" component="p">
-                  電話號碼：{state.me.phone}
+                  電話號碼：
+                  {state.me.phone}
                 </Typography>
                 <Typography variant="body2" component="p">
-                  電子郵件：{state.me.email}
+                  電子郵件：
+                  {state.me.email}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -117,6 +119,6 @@ export default function() {
           </Grid>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </>
   );
 }

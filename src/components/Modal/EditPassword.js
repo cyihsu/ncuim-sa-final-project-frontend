@@ -2,20 +2,25 @@ import React, { useState } from 'react';
 import {
   Button, TextField, Dialog,
   DialogActions, DialogContent,
-  DialogContentText, DialogTitle
+  DialogContentText, DialogTitle,
 } from '@material-ui/core';
 import { sha256 } from 'js-sha256';
 import { toast } from 'react-toastify';
 
 import { sendData } from '../../utils/dataUtils';
 
-export default function({ data, open, toggler }) {
+export default function ({ data, open, toggler }) {
   const [password, setPassword] = useState();
   const [passwordCheck, setCheck] = useState();
 
   return (
     <Dialog open={open} onClose={toggler} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">修改 {data.name} 的登入密碼</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+修改
+        {data.name}
+        {' '}
+的登入密碼
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>
           請注意，以下操作將直接覆蓋使用者既有密碼，請謹慎操作。
@@ -38,8 +43,8 @@ export default function({ data, open, toggler }) {
           type="password"
           error={password && passwordCheck && password !== passwordCheck}
           helperText={
-            (password && passwordCheck && password !== passwordCheck) &&
-            "重新輸入密碼不一致！"
+            (password && passwordCheck && password !== passwordCheck)
+            && '重新輸入密碼不一致！'
           }
           fullWidth
           onChange={(event) => {
@@ -57,13 +62,13 @@ export default function({ data, open, toggler }) {
               endpoint: `/user/credentials/${data.id}`,
               method: 'patch',
               data: {
-                password: sha256(password)
+                password: sha256(password),
               },
-              withAuth: true
+              withAuth: true,
             }).then(() => {
-              toast.success("修改密碼成功！");
+              toast.success('修改密碼成功！');
             }).catch(() => {
-              toast.error("修改密碼失敗")
+              toast.error('修改密碼失敗');
             });
             toggler();
           }}

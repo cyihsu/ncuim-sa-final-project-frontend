@@ -6,33 +6,33 @@ export const UIContextProvider = (props) => {
     <UIContext.Provider
       value={{
         state,
-        dispatch
+        dispatch,
       }}
     >
       {props.children}
     </UIContext.Provider>
   );
-}
+};
 
 export const UIContext = React.createContext({
   toggleNotification: false,
-  currentMessage: "",
+  currentMessage: '',
   currentMessageType: 0,
-})
+});
 
 export const initUserState = {
   toggleNotification: false,
-  currentMessage: "",
+  currentMessage: '',
   currentMessageType: 0,
-}
+};
 
 export function UIReducer(state, action) {
   switch (action.type) {
-    case "TOGGLE_MESSAGE":
+    case 'TOGGLE_MESSAGE':
       return {
         ...state,
         toggleModal: true,
-        currentModal: action.payload.modalType
+        currentModal: action.payload.modalType,
       };
     default:
       return state;

@@ -14,11 +14,14 @@ export default function FormDialog({ data, open, toggler }) {
     <Dialog
       open={open}
       onClose={toggler}
-      fullWidth={true}
+      fullWidth
       maxWidth="xs"
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">{data.requirement ?'修改' : '新增'}時段需求</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {data.requirement ? '修改' : '新增'}
+時段需求
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>
           請輸入該時段人力需求及人力安排資訊。
@@ -34,23 +37,27 @@ export default function FormDialog({ data, open, toggler }) {
           max={10}
         />
         {
-          data.requirement ?
-          <TextField
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-          /> : null
+          data.requirement
+            ? (
+              <TextField
+                margin="dense"
+                id="name"
+                label="Email Address"
+                type="email"
+                fullWidth
+              />
+            ) : null
         }
-        
+
       </DialogContent>
       <DialogActions>
         {
-          data.requirement &&
+          data.requirement
+          && (
           <Button onClick={toggler} color="secondary">
             刪除需求
           </Button>
+          )
         }
         <Button onClick={toggler} color="primary">
           取消

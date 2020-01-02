@@ -7,17 +7,18 @@ import Typography from '@material-ui/core/Typography';
 
 import { useStyles, dayChineseName } from './TimelineConst';
 
-export default function({day, week, data, toggler}) {
-  
+export default function ({
+  day, week, data, toggler,
+}) {
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
-  if(!init) {
+  if (!init) {
     let initState = [];
-    data.forEach(each => {
-      initState = {...initState, [each.time]: true};
+    data.forEach((each) => {
+      initState = { ...initState, [each.time]: true };
     });
 
-    setHourMap(prev => {return {...prev, ...initState}});
+    setHourMap((prev) => ({ ...prev, ...initState }));
     setInit(true);
   }
 
@@ -28,7 +29,8 @@ export default function({day, week, data, toggler}) {
         <Grid container alignItems="center">
           <Grid item xs>
             <Typography gutterBottom variant="h4">
-              星期{dayChineseName[day]}
+              星期
+              {dayChineseName[day]}
             </Typography>
           </Grid>
           <Grid item>
@@ -36,8 +38,8 @@ export default function({day, week, data, toggler}) {
               已選取時段：
               {
                 Object.keys(hourMap)
-                      .filter(hour => hourMap[hour] === true)
-                      .length
+                  .filter((hour) => hourMap[hour] === true)
+                  .length
               }
             </Typography>
           </Grid>
@@ -59,11 +61,11 @@ export default function({day, week, data, toggler}) {
                     key={token}
                     label={token}
                     color={
-                      hourMap[token] ? "secondary" : "default"
+                      hourMap[token] ? 'secondary' : 'default'
                     }
                     onClick={() => toggler({
                       time: token,
-                      data: tmp ? tmp : null
+                      data: tmp || null,
                     })}
                   />
                 </Tooltip>

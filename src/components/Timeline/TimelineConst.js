@@ -1,8 +1,8 @@
 
 import { makeStyles } from '@material-ui/core/styles';
 
-const dayChineseName = ["日", "一", "二", "三", "四", "五", "六"];
-const useStyles = makeStyles(theme => ({
+const dayChineseName = ['日', '一', '二', '三', '四', '五', '六'];
+const useStyles = makeStyles((theme) => ({
   chip: {
     marginRight: theme.spacing(1),
   },
@@ -16,5 +16,5 @@ const useStyles = makeStyles(theme => ({
 
 export {
   dayChineseName,
-  useStyles
-}
+  useStyles,
+};

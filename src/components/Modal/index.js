@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {
   Button, TextField, Dialog,
   DialogActions, DialogContent,
-  DialogContentText, DialogTitle
+  DialogContentText, DialogTitle,
 } from '@material-ui/core';
 
 import EditInfo from './EditInfo';
@@ -12,12 +12,12 @@ import EditRequirement from './EditRequirement';
 
 import { UIContext } from '../../contexts/UIContext';
 
-export function Test ({data}) {
-  const {state, dispatch} = React.useContext(UIContext);
+export function Test({ data }) {
+  const { state, dispatch } = React.useContext(UIContext);
   function handleClose() {
     dispatch({
-      type: 'CLOSE_MODAL'
-    })
+      type: 'CLOSE_MODAL',
+    });
   }
 
   return (
@@ -51,5 +51,5 @@ export function Test ({data}) {
 export {
   EditInfo,
   EditPassword,
-  EditRequirement
-}
+  EditRequirement,
+};
