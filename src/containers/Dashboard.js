@@ -174,7 +174,11 @@ export default function Dashboard(props) {
                   setLocation("班表繳交");
                   return (<Requirement {...props} />);
                 }} exact />
-                <Route path="/dashboard/editrequirement" render={() => {
+                <Route path="/dashboard/edit" render={() => {
+                  setLocation("人力需求管理");
+                  return (<RequirementEdit {...props} />);
+                }} exact />
+                <Route path="/dashboard/edit/:year/:week" render={() => {
                   setLocation("人力需求管理");
                   return (<RequirementEdit {...props} />);
                 }} exact />

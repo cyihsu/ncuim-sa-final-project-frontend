@@ -6,28 +6,41 @@ import {
 } from '@material-ui/core';
 import { sha256 } from 'js-sha256';
 import { toast } from 'react-toastify';
+import { UserContext } from '../../contexts/UserContext';
 
 import { sendData } from '../../utils/dataUtils';
 
 export default function ({ data, open, toggler }) {
-  const [password, setPassword] = useState();
-  const [passwordCheck, setCheck] = useState();
-
+  const [old_password, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setCheck] = useState("");
+  const { state } = React.useContext(UserContext);
   return (
     <Dialog open={open} onClose={toggler} aria-labelledby="form-dialog-title">
       <DialogTitle id="form-dialog-title">
-修改
-        {' '}
-        {data.name}
-        {' '}
-的登入密碼
+        修改你的登入密碼
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
           請注意，以下操作將直接覆蓋使用者既有密碼，請謹慎操作。
         </DialogContentText>
+        {
+          state.me.rank
+          && !state.me.rank.admin ? (
+            <TextField
+              autoFocus
+              margin="dense"
+              id="password"
+              label="請輸入舊密碼"
+              type="password"
+              fullWidth
+              onChange={(event) => {
+                setOldPassword(event.target.value);
+              }}
+            />
+          ) : (<React.Fragment />)
+        }
         <TextField
-          autoFocus
           margin="dense"
           id="password"
           label="請輸入密碼"
@@ -60,9 +73,10 @@ export default function ({ data, open, toggler }) {
         <Button
           onClick={() => {
             sendData({
-              endpoint: `/user/credentials/${data.id}`,
+              endpoint: `/user/credentials/${localStorage.getItem('uid')}`,
               method: 'patch',
               data: {
+                old_password: sha256(old_password),
                 password: sha256(password),
               },
               withAuth: true,

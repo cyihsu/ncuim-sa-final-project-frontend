@@ -4,6 +4,7 @@ import { Select, Button } from '@material-ui/core';
 import { getData, sendData } from '../../utils/dataUtils';
 import { options, title } from './settings';
 import { localization } from './localization';
+import { toast } from 'react-toastify';
 
 async function fetch() {
   return await getData({
@@ -75,8 +76,8 @@ export default function ({ toggler, setter }) {
           fetch()
             .then((source) => {
               resolve({
-                data: source.data.data,
-                page: 0,
+                data: source.data.data.slice(query.pageSize * (query.page), query.pageSize * (query.page + 1)),
+                page: query.page,
                 totalCount: source.data.data.length,
               });
             });
@@ -135,22 +136,36 @@ export default function ({ toggler, setter }) {
             );
           }, 1000);
         }),
+        
         onRowDelete: (oldData) => new Promise((resolve, reject) => {
           setTimeout(() => {
-            sendData({
-              endpoint: `/user/${oldData.uid}`,
-              method: 'delete',
-              withAuth: true,
-            }).then(
+            if(oldData.uid.toString() === localStorage.getItem('uid')) {
+              toast.error('你不能幫自己降職！');
               fetch()
-                .then((source) => {
-                  resolve({
-                    data: source.data.data,
-                    page: 0,
-                    totalCount: source.data.data.length,
-                  });
-                }),
-            );
+                  .then((source) => {
+                    resolve({
+                      data: source.data.data,
+                      page: 0,
+                      totalCount: source.data.data.length,
+                    });
+                  })
+            }
+            else {
+              sendData({
+                endpoint: `/user/${oldData.uid}`,
+                method: 'delete',
+                withAuth: true,
+              }).then(
+                fetch()
+                  .then((source) => {
+                    resolve({
+                      data: source.data.data,
+                      page: 0,
+                      totalCount: source.data.data.length,
+                    });
+                  }),
+              );
+            }
           }, 1000);
         }),
       }}

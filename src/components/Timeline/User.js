@@ -1,27 +1,31 @@
 import React, { useCallback } from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { Tooltip, Chip } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { toast } from 'react-toastify';
-import { trigger } from 'swr';
 import { sendData } from '../../utils/dataUtils';
 
 import { useStyles, dayChineseName } from './TimelineConst';
+import moment from 'moment';
 
-export default function ({ day, week, data }) {
+export default function ({ day, week, year, data }) {
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
+  const [send, setSend] = React.useState(false);
+  const isEmpty = !(data && data !== null && typeof data !== "undefined");
+
   if (!init) {
     let initState = [];
-    data.forEach((each) => {
-      if (each.given) {
-        initState = { ...initState, [each.time]: typeof each.given !== 'undefined' };
-      }
-    });
+    if(!isEmpty) {
+      data.forEach((each) => {
+        if (each.given) {
+          initState = { ...initState, [each.time]: typeof each.given !== 'undefined' };
+        }
+      });
+    }    
     setHourMap((prev) => ({ ...prev, ...initState }));
     setInit(true);
   }
@@ -40,6 +44,7 @@ export default function ({ day, week, data }) {
             <Typography gutterBottom variant="h4">
               星期
               {dayChineseName[day]}
+              ({moment().year(year).week(parseInt(week) + 1).day(parseInt(day)).toISOString().substring(0, 10)})
             </Typography>
           </Grid>
           <Grid item>
@@ -62,7 +67,8 @@ export default function ({ day, week, data }) {
         <div>
           {
             Array.from(Array(24).keys()).map((token) => {
-              const tmp = data.find((hour) => hour.time === token);
+              let tmp = null;
+              if(!isEmpty)tmp = data.find((hour) => hour.time === token);
               return (
                 <Tooltip key={token} title={`需求人力：${tmp && tmp.requirement}`} placement="top">
                   <Chip
@@ -70,11 +76,11 @@ export default function ({ day, week, data }) {
                     key={token}
                     label={token}
                     color={
-                      tmp
+                      (tmp && !isEmpty)
                         ? hourMap[token] ? 'secondary' : 'primary'
                         : 'default'
                     }
-                    disabled={!tmp}
+                    disabled={!tmp && !isEmpty}
                     onClick={() => handleClick(token)}
                   />
                 </Tooltip>
@@ -86,49 +92,30 @@ export default function ({ day, week, data }) {
       <div className={classes.section3}>
         <Button
           color="primary"
+          disabled={send}
           onClick={() => {
-            let fail = 0;
+            let stateKeys = [];
             Object.keys(hourMap).forEach((hour) => {
               const requirementID_tmp = data.find((e) => e.time === parseInt(hour));
-              if (hourMap[hour] === true) {
-                if (requirementID_tmp) {
-                  sendData({
-                    endpoint: '/available/token/add',
-                    method: 'post',
-                    data: {
-                      uid: localStorage.getItem('uid'),
-                      rid: requirementID_tmp.id,
-                    },
-                    withAuth: true,
-                  }).catch(() => {
-                    ++fail;
-                  });
-                }
-              } else if (requirementID_tmp) {
-                sendData({
-                  endpoint: '/available/token/remove',
-                  method: 'delete',
-                  data: {
-                    uid: localStorage.getItem('uid'),
-                    rid: requirementID_tmp.id,
-                  },
-                  withAuth: true,
-                }).catch(() => {
-                  ++fail;
-                });
+              stateKeys = {
+                ...stateKeys,
+                [requirementID_tmp.id]: hourMap[hour]
               }
             });
-            if (fail > 0)toast.error('送出部分時段失敗，請重新整理！');
-            else toast.success('送出時段成功');
-            trigger(`/schedule/week/${week}`);
-            let initState = [];
-            data.forEach((each) => {
-              if (each.given) {
-                initState = { ...initState, [each.time]: typeof each.given !== 'undefined' };
-              }
+            setSend(true);
+            sendData({
+              endpoint: '/token/edit',
+              method: 'post',
+              data: {
+                uid: localStorage.getItem('uid'),
+                state: stateKeys,
+              },
+              withAuth: true,
+              isJSON: true,
+            }).then(() => {
+              toast.success("修改成功！");
+              window.location.reload();
             });
-            setHourMap((prev) => ({ ...prev, ...initState }));
-            toast.success('重新載入成功');
           }}
         >
           送出可上班時段

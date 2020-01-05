@@ -2,7 +2,7 @@
   "name": "ncuim-sa-project",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://alpha.lc.ncu.edu.tw:8080/NCUIM-SA-TOMCAT-DEV",
+  "homepage": "http://localhost:8080/NCU_MIS_SA_Group23",
   "dependencies": {
     "@material-ui/core": "^4.7.1",
     "@material-ui/icons": "^4.5.1",
@@ -27,6 +27,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build-analyzable": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

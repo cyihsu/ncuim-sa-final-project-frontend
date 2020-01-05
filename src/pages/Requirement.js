@@ -4,6 +4,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { UserTimeline } from '../components/Timeline';
 import { getData } from '../utils/dataUtils';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -16,26 +17,30 @@ const useStyles = makeStyles((theme) => ({
 
 export default function () {
   const classes = useStyles();
-  const week = 51;
-  const requirementData = useSWR(`/schedule/week/${week}`, (url) => getData({ endpoint: url, withAuth: true }));
+  const [week] = React.useState(parseInt(moment().week()));
+  const [year] = React.useState(moment().year());
+  const requirementData = useSWR(`/schedule/year/${year}?week=${week}`, (url) => getData({ endpoint: url, withAuth: true }));
 
   if (!requirementData.data) {
     return <p>loading...</p>;
   }
-
-  const mapped = requirementData.data.data.data.map((date) => ({
-    id: date.timeTokenID,
-    day: new Date(date.tokenDate).getDay(),
-    time: date.tokenTime,
-    requirement: date.workforceRequirements,
-    given: date.availableWorkforce.find(
-      (each) => each.user.uid === parseInt(localStorage.getItem('uid')),
-    ),
-  }));
+  let mapped = {};
+  
+  if(typeof requirementData.data.data.data !== "undefined") {
+    mapped = requirementData.data.data.data.map((date) => ({
+      id: date.timeTokenID,
+      day: new Date(date.tokenDate).getDay(),
+      time: date.tokenTime,
+      requirement: date.workforceRequirements,
+      given: date.availableWorkforce.find(
+        (each) => each.user.uid === parseInt(localStorage.getItem('uid')),
+      ),
+    }));
+  }
 
   return (
     <Grid>
-      <h1>12/22 - 12/28 人力需求資訊</h1>
+      <h1>西元{year}年第{week + 1}週人力需求資訊</h1>
       <Grid
         container
         direction="column"
@@ -45,11 +50,12 @@ export default function () {
       >
         {
         Array.from(Array(7).keys()).map((day) => {
-          const requirement = mapped.filter((e) => e.day === day);
+          let requirement = null;
+          if(Object.keys(mapped).length > 0)requirement = mapped.filter((e) => e.day === day);
           return (
             <Grid item key={day}>
               <Paper className={classes.paper}>
-                <UserTimeline day={day} week={week} data={requirement} />
+                <UserTimeline day={day} week={week} year={year} data={requirement} />
               </Paper>
             </Grid>
           );

@@ -7,13 +7,12 @@ import {
   Avatar,
   CssBaseline, Typography,
   Grid, Paper,
-  Button, Link, TextField,
+  Button, TextField,
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { authenticate, sendData } from '../utils/dataUtils';
 import { UserContext } from '../contexts/UserContext';
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,7 +63,47 @@ export default function (props) {
           <Typography component="h1" variant="h5">
             登入系統
           </Typography>
-          <form className={classes.form} noValidate>
+          <form
+            className={classes.form}
+            noValidate
+            onSubmit={(event) => {
+              setSubmit(true);
+              props.setLoader(10);
+              sendData({
+                endpoint: '/login',
+                method: 'post',
+                data: {
+                  username,
+                  password: sha256(password),
+                },
+                withAuth: false,
+              }).then(({ data }) => {
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('uid', data.data.uid);
+                props.setLoader(30);
+                authenticate().then((res) => {
+                  if (!res.data.data.dismissed) {
+                    dispatch({
+                      type: 'LOGIN',
+                      payload: {
+                        authenticated: true,
+                        me: res.data.data,
+                      },
+                    });
+                    toast.success('登入成功');
+                  }
+                });
+                props.setLoader(60);
+                history.push('/dashboard');
+                props.setLoader(100);
+              }).catch((error) => {
+                setSubmit(false);
+                toast.error('目前無法登入');
+                props.setLoader(0);
+              });
+              event.preventDefault();
+            }}
+          >
             <TextField
               variant="outlined"
               margin="normal"
@@ -94,53 +133,11 @@ export default function (props) {
               variant="contained"
               color="primary"
               className={classes.submit}
+              type="submit"
               disabled={submit}
-              onClick={() => {
-                setSubmit(true);
-                props.setLoader(10);
-                sendData({
-                  endpoint: '/login',
-                  method: 'post',
-                  data: {
-                    username,
-                    password: sha256(password),
-                  },
-                  withAuth: false,
-                }).then(({ data }) => {
-                  localStorage.setItem('token', data.data.token);
-                  localStorage.setItem('uid', data.data.uid);
-                  props.setLoader(30);
-                  authenticate().then((res) => {
-                    if (!res.data.data.dismissed) {
-                      dispatch({
-                        type: 'LOGIN',
-                        payload: {
-                          authenticated: true,
-                          me: res.data.data,
-                        },
-                      });
-                      toast.success('登入成功');
-                    }
-                  });
-                  props.setLoader(60);
-                  history.push('/dashboard');
-                  props.setLoader(100);
-                }).catch((error) => {
-                  setSubmit(false);
-                  toast.error('目前無法登入');
-                  props.setLoader(0);
-                });
-              }}
             >
               登入
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  忘記密碼？
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
       </Grid>

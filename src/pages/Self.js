@@ -6,7 +6,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { UserContext } from '../contexts/UserContext';
 
-import { EditInfo, EditPassword, Test } from '../components/Modal';
+import { EditInfo, EditSelfPassword } from '../components/Modal';
 
 const useStyles = makeStyles((theme) => ({
   fixedHeight: {
@@ -43,17 +43,20 @@ export default function () {
     setPWD(!togglePWDEditor);
   };
 
-  const user = { name: state.me.name, id: state.me.id };
+  const user = {
+    name: state.me.name,
+    phone: state.me.phone,
+    email: state.me.email
+  };
 
   return (
     <>
       <EditInfo open={toggleEditor} toggler={handleEditor} data={user} />
-      <EditPassword open={togglePWDEditor} toggler={handleModal} data={user} />
-      <Test />
+      <EditSelfPassword open={togglePWDEditor} toggler={handleModal} data={user} />
       <Grid item xs={12}>
         <h1>我的個人資訊</h1>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={7}>
+          <Grid item xs={12} md={5}>
             <Card className={classes.fixedHeight}>
               <Typography component="h2" variant="h6" color="primary" gutterBottom>
               職等資訊
@@ -74,23 +77,26 @@ export default function () {
                   </Grid>
                   <Grid item xs={6}>
                     <Typography component="p" variant="h4">
-                      $4,500
+                      ${
+                        state.me.rank
+                        && state.me.rank.hourlyPay * state.count
+                      }
                     </Typography>
                     <Typography color="textSecondary" className={classes.depositContext}>
-                      下一個發薪日薪資
+                      上月預期薪資<br />（實際狀況請洽主管）
                     </Typography>
                     <Typography component="p" variant="h4">
-                      30小時
+                      {state.count}小時
                     </Typography>
                     <Typography color="textSecondary" className={classes.depositContext}>
-                      本月累積工時
+                      上月給班時數
                     </Typography>
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={7}>
             <Card className={classes.fixedHeight}>
               <CardContent>
                 <Typography color="textSecondary" gutterBottom>

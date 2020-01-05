@@ -4,19 +4,23 @@ import { Tooltip, Chip } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import moment from 'moment';
 
 import { useStyles, dayChineseName } from './TimelineConst';
 
 export default function ({
-  day, week, data, toggler,
+  year, day, week, data, toggler,
 }) {
   const [hourMap, setHourMap] = React.useState({});
   const [init, setInit] = React.useState(false);
+  const isEmpty = !(data && data !== null && typeof data !== "undefined");
   if (!init) {
     let initState = [];
-    data.forEach((each) => {
-      initState = { ...initState, [each.time]: true };
-    });
+    if(!isEmpty) {
+      data.forEach((each) => {
+        initState = { ...initState, [each.time]: true };
+      });
+    }
 
     setHourMap((prev) => ({ ...prev, ...initState }));
     setInit(true);
@@ -31,6 +35,7 @@ export default function ({
             <Typography gutterBottom variant="h4">
               星期
               {dayChineseName[day]}
+              ({moment().year(year).week(parseInt(week)).day(parseInt(day)).toISOString().substring(0, 10)})
             </Typography>
           </Grid>
           <Grid item>
@@ -53,7 +58,8 @@ export default function ({
         <div>
           {
             Array.from(Array(24).keys()).map((token) => {
-              const tmp = data.find((hour) => hour.time === token);
+              let tmp = null;
+              if(!isEmpty)tmp = data.find((hour) => hour.time === token);
               return (
                 <Tooltip key={token} title={`需求人力：${tmp ? tmp.requirement : '無'}`} placement="top">
                   <Chip
@@ -61,12 +67,15 @@ export default function ({
                     key={token}
                     label={token}
                     color={
-                      hourMap[token] ? 'secondary' : 'default'
+                      (hourMap[token] && !isEmpty) ? 'secondary' : 'default'
                     }
-                    onClick={() => toggler({
-                      time: token,
-                      data: tmp || null,
-                    })}
+                    onClick={() => {
+                      const time = moment().year(year).week(week).day(day).toISOString().substring(0, 10);
+                      toggler({
+                        time: token,
+                        data: tmp ? {...tmp, date: time} : {day: day, time: token, date: time},
+                      })
+                    }}
                   />
                 </Tooltip>
               );

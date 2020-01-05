@@ -83,7 +83,7 @@ export default function (props) {
           <ListItem
             button
             onClick={() => {
-              handleClick('/dashboard/editrequirement');
+              handleClick('/dashboard/edit');
             }}
           >
             <ListItemIcon>

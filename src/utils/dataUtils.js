@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-const base = 'http://alpha.lc.ncu.edu.tw:8080/NCUIM-SA-TOMCAT-DEV/api/v1';
+const base = `${window.location.origin}/NCU_MIS_SA_Group23/api/v1`;
 
 export async function authenticate() {
   return await getData({
@@ -24,20 +24,22 @@ export async function getData({ endpoint, withAuth }) {
 }
 
 export async function sendData({
-  endpoint, method, data, withAuth,
+  endpoint, method, data, withAuth, isJSON
 }) {
-  const header = !withAuth ? {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  } : {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
-  };
+  let header = {};
+  if(withAuth) {
+    header = {...header, Authorization: `Bearer ${localStorage.getItem('token')}`}
+  }
+  if(!isJSON) {
+    header = {...header, 'Content-Type': 'application/x-www-form-urlencoded'}
+  }
+  data = isJSON ? data : qs.stringify(data);
   const response = await axios({
     url: endpoint,
     headers: header,
     baseURL: base,
     method,
-    data: qs.stringify(data),
+    data: data,
   });
   return response;
 }

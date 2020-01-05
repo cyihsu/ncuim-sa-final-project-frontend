@@ -1,14 +1,14 @@
 import React from 'react';
 import useSWR from 'swr';
-import { Grid } from '@material-ui/core';
 import Timeline from 'react-calendar-timeline';
 import { getData } from '../utils/dataUtils';
+import moment from 'moment';
 // make sure you include the timeline stylesheet or the timeline will not be styled
 import 'react-calendar-timeline/lib/Timeline.css';
 
 export default function () {
-  const week = 51;
-  const { data: workData } = useSWR(`/schedule/week/${week}`, (url) => getData({ endpoint: url, withAuth: true }));
+  const currentDate = moment();
+  const { data: workData } = useSWR(`/schedule/all`, (url) => getData({ endpoint: url, withAuth: true }));
   const { data: userData } = useSWR('/user/all', (url) => getData({ endpoint: url, withAuth: true }));
 
   if (!workData) {
@@ -38,15 +38,15 @@ export default function () {
     id: user.uid,
     title: user.name,
   }));
-
+  console.log(items);
   return (
     <>
-      <h1>Timetable</h1>
+      <h1>所有員工目前給班狀況</h1>
       <Timeline
         groups={groups}
         items={items}
-        defaultTimeStart={1576972800000}
-        defaultTimeEnd={1576992800000}
+        defaultTimeStart={currentDate.toDate().getTime()}
+        defaultTimeEnd={currentDate.toDate().getTime() + 3600000 * 24 * 7}
       />
     </>
   );
