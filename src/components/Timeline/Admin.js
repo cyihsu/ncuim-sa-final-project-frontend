@@ -35,7 +35,7 @@ export default function ({
             <Typography gutterBottom variant="h4">
               星期
               {dayChineseName[day]}
-              ({moment().year(year).week(parseInt(week)).day(parseInt(day)).toISOString().substring(0, 10)})
+              ({moment().year(year).week(parseInt(week)).day(parseInt(day) + 1).toISOString().substring(0, 10)})
             </Typography>
           </Grid>
           <Grid item>
@@ -70,7 +70,7 @@ export default function ({
                       (hourMap[token] && !isEmpty) ? 'secondary' : 'default'
                     }
                     onClick={() => {
-                      const time = moment().year(year).week(week).day(day).toISOString().substring(0, 10);
+                      const time = moment().year(year).week(week).day(day + 1).toISOString().substring(0, 10);
                       toggler({
                         time: token,
                         data: tmp ? {...tmp, date: time} : {day: day, time: token, date: time},

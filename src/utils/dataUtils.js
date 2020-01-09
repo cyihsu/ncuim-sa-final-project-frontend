@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-const base = `${window.location.origin}/NCU_MIS_SA_Group23/api/v1`;
+const base = `http://alpha.lc.ncu.edu.tw:8080/NCU_MIS_SA_Group23/api/v1`;
 
 export async function authenticate() {
   return await getData({

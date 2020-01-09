@@ -80,14 +80,15 @@ export default function ({ data, open, toggler }) {
                     type: 'LOGIN',
                     payload: {
                       authenticated: true,
-                      me: res.data.data,
+                      me: res.data.data.user,
+                      count: parseInt(res.data.data.count)
                     },
                   });
                 }
               })
-              toast.success('修改密碼成功！');
+              toast.success('修改資料成功！');
             }).catch(() => {
-              toast.error('修改密碼失敗');
+              toast.error('修改資料失敗');
             });
             toggler();
           }}

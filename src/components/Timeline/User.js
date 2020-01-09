@@ -44,7 +44,7 @@ export default function ({ day, week, year, data }) {
             <Typography gutterBottom variant="h4">
               星期
               {dayChineseName[day]}
-              ({moment().year(year).week(parseInt(week) + 1).day(parseInt(day)).toISOString().substring(0, 10)})
+              ({moment().year(year).week(parseInt(week) + 1).day(parseInt(day) + 1).toISOString().substring(0, 10)})
             </Typography>
           </Grid>
           <Grid item>
